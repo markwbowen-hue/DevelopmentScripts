@@ -1,6 +1,9 @@
-# keepalive.ps1
-# Connect to Azure using a Service Principal or Managed Identity
-Connect-AzAccount -ServicePrincipal -Tenant $env:TENANT_ID -ApplicationId $env:APP_ID -Credential (ConvertTo-SecureString $env:APP_SECRET -AsPlainText -Force)
+# Convert secret to PSCredential
+$securePassword = ConvertTo-SecureString $env:APP_SECRET -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential ($env:APP_ID, $securePassword)
 
-# Perform a harmless action to simulate activity
+# Authenticate
+Connect-AzAccount -ServicePrincipal -Tenant $env:TENANT_ID -Credential $credential
+
+# Harmless activity
 Get-AzSubscription | Out-Host
