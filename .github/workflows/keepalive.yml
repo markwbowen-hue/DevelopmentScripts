@@ -13,14 +13,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up PowerShell
-        uses: actions/setup-powershell@v2
-
       - name: Install Azure PowerShell module
+        shell: pwsh
         run: Install-Module -Name Az -Force -Scope CurrentUser
 
       - name: Run keep-alive script
-        run: pwsh ./keepalive.ps1
+        shell: pwsh
+        run: ./keepalive.ps1
         env:
           TENANT_ID: ${{ secrets.TENANT_ID }}
           APP_ID: ${{ secrets.APP_ID }}
