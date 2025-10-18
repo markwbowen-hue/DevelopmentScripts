@@ -1,4 +1,4 @@
-name: Create SharePoint Site
+name: Create SharePoint Site via Graph
 
 on:
   workflow_dispatch: # Manual trigger
