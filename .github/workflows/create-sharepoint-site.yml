@@ -8,9 +8,19 @@ on:
 jobs:
   create-site:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Validate secrets
+        run: |
+          if [ -z "${{ secrets.APP_ID }}" ] || [ -z "${{ secrets.APP_SECRET }}" ] || [ -z "${{ secrets.TENANT_ID }}" ]; then
+            echo "❌ Missing required secrets: APP_ID, APP_SECRET, TENANT_ID"
+            exit 1
+          fi
+          echo "✅ Secrets are set."
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -19,10 +29,10 @@ jobs:
       - name: Install dependencies
         run: pip install requests msal
 
-      - name: Create SharePoint Site via Graph
+      - name: Run create_site.py
         env:
-          CLIENT_ID: ${{ secrets.APP_ID }}
-          CLIENT_SECRET: ${{ secrets.APP_SECRET }}
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_SECRET: ${{ secrets.APP_SECRET }}
           TENANT_ID: ${{ secrets.TENANT_ID }}
         run: |
           python create_site.py
