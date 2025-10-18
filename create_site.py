@@ -7,7 +7,7 @@ APP_SECRET = os.getenv("APP_SECRET")
 TENANT_ID = os.getenv("TENANT_ID")
 
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
-SCOPE = ["https://graph.microsoft.com/.default"]  # Correct scope
+SCOPE = ["https://markbowire.sharepoint.com/.default"] # Correct scope
 
 app = ConfidentialClientApplication(APP_ID, authority=AUTHORITY, client_credential=APP_SECRET)
 token = app.acquire_token_for_client(scopes=SCOPE)
