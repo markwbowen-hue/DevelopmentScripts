@@ -1,8 +1,8 @@
 import os
 import requests
 from msal import ConfidentialClientApplication
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+APP_ID = os.getenv("APP_ID")
+APP_SECRET = os.getenv("APP_SECRET")
 TENANT_ID = os.getenv("TENANT_ID")
 
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
@@ -19,7 +19,7 @@ payload = {
     "displayName": "Project Alpha",
     "description": "Site for Project Alpha team collaboration",
     "webTemplate": "STS#3",
-    "siteCollection": {"hostname": "contoso.sharepoint.com"}
+    "siteCollection": {"hostname": "MARKBOWIRE.sharepoint.com"}
 }
 
 response = requests.post(url, headers=headers, json=payload)
