@@ -8,7 +8,7 @@ APP_SECRET = os.getenv("APP_SECRET")
 TENANT_ID = os.getenv("TENANT_ID")
 
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
-SCOPE = ["https://{tenant}.sharepoint.com/.default"]  # Important for SharePoint REST API
+SCOPE = ["https://markbowire.sharepoint.com/.default"]  # Important for SharePoint REST API
 
 # Acquire token using MSAL
 app = ConfidentialClientApplication(APP_ID, authority=AUTHORITY, client_credential=APP_SECRET)
@@ -21,7 +21,7 @@ access_token = token["access_token"]
 
 # SharePoint REST API endpoint
 tenant_hostname = "markbowire.sharepoint.com"  # Replace with your actual tenant domain
-url = f"https://{tenant_hostname}/_api/SPSiteManager/Create"
+url = f"https://markbowire.sharepoint.com/_api/SPSiteManager/Create"
 
 headers = {
     "Authorization": f"Bearer {access_token}",
