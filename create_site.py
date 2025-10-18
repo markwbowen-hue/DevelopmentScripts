@@ -1,33 +1,38 @@
-import os
-import requests
-from msal import ConfidentialClientApplication
+name: Create SharePoint Site
 
-APP_ID = os.getenv("APP_ID")
-APP_SECRET = os.getenv("APP_SECRET")
-TENANT_ID = os.getenv("TENANT_ID")
+on:
+  workflow_dispatch: # Manual trigger
+  schedule:
+    - cron: '0 9 * * *' # Runs daily at 09:00 UTC
 
-AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
-SCOPE = ["https://graph.microsoft.com/.default"]
+jobs:
+  create-site:
+    runs-on: ubuntu-latest
 
-app = ConfidentialClientApplication(APP_ID, authority=AUTHORITY, client_credential=APP_SECRET)
-token = app.acquire_token_for_client(scopes=SCOPE)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-if "access_token" not in token:
-    raise Exception(f"Token acquisition failed: {token}")
+      - name: Validate secrets
+        run: |
+          if [ -z "${{ secrets.APP_ID }}" ] || [ -z "${{ secrets.APP_SECRET }}" ] || [ -z "${{ secrets.TENANT_ID }}" ]; then
+            echo "❌ Missing required secrets: APP_ID, APP_SECRET, TENANT_ID"
+            exit 1
+          fi
+          echo "✅ Secrets are set."
 
-access_token = token["access_token"]
-headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-# Replace with your actual tenant hostname
-hostname = "markbowire.sharepoint.com"
-url = f"https://graph.microsoft.com/v1.0/sites/{hostname}/sites"
+      - name: Install dependencies
+        run: pip install requests msal
 
-payload = {
-    "displayName": "Project Alpha",
-    "description": "Site for Project Alpha team collaboration",
-    "webTemplate": "STS#3",
-    "siteCollection": {"hostname": hostname}
-}
-
-response = requests.post(url, headers=headers, json=payload)
-print(response.status_code, response.json())
+      - name: Run create_site.py
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_SECRET: ${{ secrets.APP_SECRET }}
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+        run: |
+          python create_site.py
